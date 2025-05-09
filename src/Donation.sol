@@ -3,8 +3,10 @@ pragma solidity ^0.8.0;
 
 import {AccessControl} from "./Accesscontrol.sol";
 import {Fundraising_Campaign} from "./Fundraising_Campaign.sol";
+// import {FundraiserRegisteration} from "./Registeration.sol";
+import {FunderRegisteration} from "./Registeration.sol";
 
-contract Donation {
+contract Donation is FunderRegisteration {
     struct DonationDetails {
         address donor;
         uint256 campaignId;
@@ -17,7 +19,7 @@ contract Donation {
     mapping(address => uint256) public totalDonationsPerDonor;
     mapping(address => uint256) public CampaignBalance;
 
-    function donate(uint256 campaignId) public payable {
+    function donate(uint256 campaignId) public payable onlyFunders(msg.sender) {
         (bool isVerified, bool isPublished) = fundraising_Campaign
             .getCampaignStatus(campaignId);
 

@@ -10,16 +10,10 @@ contract FundraiserRegisteration is AccessControl {
         string fundraiserEmail;
         string fundraiserCountry;
         bool fundraiserRegistered;
-        uint256 registerationTime;
+        uint256 registrationTime;
     }
-    modifier onlyFundraiser() {
-        require(
-            fundraisers[msg.sender].fundraiserRegistered == true,
-            "Not a registered fundraiser"
-        );
-        _;
-    }
-    mapping(address => FundRaiser) public fundraisers;
+
+    mapping(address => FundRaiser) public fundraisersByAddress;
 
     event FundraiserRegitered(address fundraiser, string name);
 
@@ -30,10 +24,10 @@ contract FundraiserRegisteration is AccessControl {
         string memory country
     ) public {
         require(
-            fundraisers[Address].fundraiserRegistered == false,
+            fundraisersByAddress[Address].fundraiserRegistered == false,
             "Fundraiser already registered"
         );
-        fundraisers[Address] = FundRaiser(
+        fundraisersByAddress[Address] = FundRaiser(
             Address,
             name,
             email,
@@ -53,35 +47,35 @@ contract FundraiserRegisteration is AccessControl {
         returns (string memory, string memory, string memory, uint256)
     {
         require(
-            fundraisers[Address].fundraiserRegistered == true,
+            fundraisersByAddress[Address].fundraiserRegistered == true,
             "Fundraiser not registered"
         );
         return (
-            fundraisers[Address].fundraiserName,
-            fundraisers[Address].fundraiserEmail,
-            fundraisers[Address].fundraiserCountry,
-            fundraisers[Address].registerationTime
+            fundraisersByAddress[Address].fundraiserName,
+            fundraisersByAddress[Address].fundraiserEmail,
+            fundraisersByAddress[Address].fundraiserCountry,
+            fundraisersByAddress[Address].registrationTime
         );
     }
 
     function getFundraiserRegisteerationStatus(
         address Address
     ) public view returns (bool) {
-        return fundraisers[Address].fundraiserRegistered;
+        return fundraisersByAddress[Address].fundraiserRegistered;
     }
 
     function IsRegisteredFundRaiser(
         address fundRaiser
     ) public view returns (bool) {
-        return fundraisers[fundRaiser].fundraiserRegistered;
+        return fundraisersByAddress[fundRaiser].fundraiserRegistered;
     }
 
-    function IsRegisteredFunder(address) public pure returns (bool) {
-        return false; // or revert
-    }
+    // function IsRegisteredFunder(address) public pure returns (bool) {
+    //     return false; // or revert
+    // }
 }
 
-contract FunderRegisteraion is AccessControl {
+contract FunderRegisteration is AccessControl {
     struct Funder {
         address funderAddress;
         string funderName;
@@ -93,7 +87,7 @@ contract FunderRegisteraion is AccessControl {
 
     mapping(address => Funder) public funders;
 
-    event FunderRegitered(address funder, string name);
+    event FunderRegistered(address funder, string name);
 
     function register(
         address Address,
@@ -113,7 +107,7 @@ contract FunderRegisteraion is AccessControl {
             true,
             block.timestamp
         );
-        emit FunderRegitered(Address, name);
+        emit FunderRegistered(Address, name);
     }
 
     function getFunderDetailsByAddress(
@@ -140,7 +134,7 @@ contract FunderRegisteraion is AccessControl {
         return funders[funder].funderRegistered;
     }
 
-    function IsRegisteredFundRaiser(address) public pure returns (bool) {
-        return false; // or revert
-    }
+    // function IsRegisteredFundRaiser(address) public pure returns (bool) {
+    //     return false; // or revert
+    // }
 }

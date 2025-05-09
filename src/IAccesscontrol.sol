@@ -1,10 +1,20 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-interface IFundraiserRegistry {
-    function isRegistered(address user) external view returns (bool);
+interface IFundraiserRegisterationStatus {
+    function isRegisteredFundraiser(address user) external view returns (bool);
 }
 
-interface IFunderRegistry {
-    function isRegistered(address user) external view returns (bool);
+interface IFunderRegisterationStatus {
+    function isRegisteredFunder(address user) external view returns (bool);
+}
+
+interface IgetFundraiserAddress {
+    function getFundraiserAddress(
+        address fundraiser
+    ) external view returns (address);
+}
+
+interface IcheckTime {
+    function checkTime() external view returns (bool);
 }

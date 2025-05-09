@@ -18,14 +18,9 @@ contract Fundraising_Campaign is AccessControl {
         bool isPublished;
         uint256 submissionTime;
     }
-    mapping(uint256 => CampaignProposal) public campaignProposal;
-    modifier onlyFundraiser(uint256 campaignId) {
-        require(
-            msg.sender == campaignProposal[campaignId].fundraiser,
-            "Not your proposal"
-        );
-        _;
-    }
+    mapping(uint256 => CampaignProposal) public campaignProposalById;
+    mapping(address => CampaignProposal) public campaignProposalByAddress;
+
     event CampaignSubmitted(uint256 id, address fundraiser);
     event CampaignVerified(uint256 id);
     event CampaignPublished(uint256 id);
@@ -46,7 +41,7 @@ contract Fundraising_Campaign is AccessControl {
         uint256 campaignId = uint256(
             keccak256(abi.encodePacked(msg.sender, block.timestamp))
         );
-        campaignProposal[campaignId] = CampaignProposal(
+        campaignProposalById[campaignId] = CampaignProposal(
             campaignId,
             msg.sender,
             title,
@@ -63,23 +58,23 @@ contract Fundraising_Campaign is AccessControl {
 
     function verifyCampaign(uint256 campaignId) public onlyServiceProvider {
         require(
-            campaignProposal[campaignId].isVerified == false,
+            campaignProposalById[campaignId].isVerified == false,
             "Already verified"
         );
-        campaignProposal[campaignId].isVerified = true;
+        campaignProposalById[campaignId].isVerified = true;
         emit CampaignVerified(campaignId);
     }
 
     function publishCampaign(uint256 campaignId) public onlyServiceProvider {
         require(
-            campaignProposal[campaignId].isVerified == true,
+            campaignProposalById[campaignId].isVerified == true,
             "Not verified yet"
         );
         require(
-            campaignProposal[campaignId].isPublished == false,
+            campaignProposalById[campaignId].isPublished == false,
             "Already published"
         );
-        campaignProposal[campaignId].isPublished = true;
+        campaignProposalById[campaignId].isPublished = true;
         emit CampaignPublished(campaignId);
     }
 
@@ -88,16 +83,16 @@ contract Fundraising_Campaign is AccessControl {
     ) public view returns (CampaignProposal memory) {
         return
             CampaignProposal(
-                campaignProposal[campaignId].id,
-                campaignProposal[campaignId].fundraiser,
-                campaignProposal[campaignId].title,
-                campaignProposal[campaignId].description,
-                campaignProposal[campaignId].goalAmount,
-                campaignProposal[campaignId].deadline,
-                campaignProposal[campaignId].category,
-                campaignProposal[campaignId].isVerified,
-                campaignProposal[campaignId].isPublished,
-                campaignProposal[campaignId].submissionTime
+                campaignProposalById[campaignId].id,
+                campaignProposalById[campaignId].fundraiser,
+                campaignProposalById[campaignId].title,
+                campaignProposalById[campaignId].description,
+                campaignProposalById[campaignId].goalAmount,
+                campaignProposalById[campaignId].deadline,
+                campaignProposalById[campaignId].category,
+                campaignProposalById[campaignId].isVerified,
+                campaignProposalById[campaignId].isPublished,
+                campaignProposalById[campaignId].submissionTime
             );
     }
 
@@ -105,9 +100,15 @@ contract Fundraising_Campaign is AccessControl {
         uint256 campaignId
     ) public view returns (bool, bool) {
         return (
-            campaignProposal[campaignId].isVerified,
-            campaignProposal[campaignId].isPublished
+            campaignProposalById[campaignId].isVerified,
+            campaignProposalById[campaignId].isPublished
         );
+    }
+
+    function getFundraiserAddress(
+        address fundraiser
+    ) public view returns (address) {
+        return campaignProposalByAddress[fundraiser].fundraiser;
     }
 
     // function getCampaignId(
