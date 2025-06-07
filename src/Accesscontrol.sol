@@ -3,14 +3,22 @@ pragma solidity ^0.8.0;
 
 import {IFunderRegisterationStatus, IFundraiserRegisterationStatus, IgetFundraiserAddress, IcheckTime} from "./IAccesscontrol.sol";
 
-contract AccessControl {
+abstract contract AccessControl {
     address public funderRegistry;
     address public fundraiserRegistry;
     uint256 public disbursementDelay = 2 days;
     address public serviceProvider;
     address public checktimeRegistry;
+    IFunderRegisterationStatus public funderRegisterationStatusContract;
+    IFundraiserRegisterationStatus public fundraiserRegisterationStatusContract;
 
-    constructor() {
+    constructor(address _fundraiserRegistry, address _funderRegistry) {
+        fundraiserRegisterationStatusContract = IFundraiserRegisterationStatus(
+            _fundraiserRegistry
+        );
+        funderRegisterationStatusContract = IFunderRegisterationStatus(
+            _funderRegistry
+        );
         serviceProvider = msg.sender;
     }
 
@@ -20,17 +28,16 @@ contract AccessControl {
     }
     modifier onlyFunders(address funder) {
         require(
-            IFunderRegisterationStatus(funderRegistry).isRegisteredFunder(
-                funder
-            ),
+            funderRegisterationStatusContract.IsRegisteredFunder(funder),
             "Not a registered funder"
         );
         _;
     }
     modifier onlyFundRaisers(address fundRaiser) {
         require(
-            IFundraiserRegisterationStatus(fundraiserRegistry)
-                .isRegisteredFundraiser(fundRaiser),
+            fundraiserRegisterationStatusContract.IsRegisteredFundRaiser(
+                fundRaiser
+            ),
             "Not a registered fundraiser"
         );
         _;
@@ -60,11 +67,11 @@ contract AccessControl {
         return serviceProvider;
     }
 
-    function setFunderRegistry(address _addr) public onlyServiceProvider {
-        funderRegistry = _addr;
-    }
+    // function setFunderRegistry(address _addr) public onlyServiceProvider {
+    //   funderRegistry = _addr;
+    //   }
 
-    function setFundraiserRegistry(address _addr) public onlyServiceProvider {
-        fundraiserRegistry = _addr;
-    }
+    // function setFundraiserRegistry(address _addr) public onlyServiceProvider {
+    //       fundraiserRegistry = _addr;
+    //   }
 }

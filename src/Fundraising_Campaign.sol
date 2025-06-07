@@ -25,19 +25,20 @@ contract Fundraising_Campaign is AccessControl {
     event CampaignVerified(uint256 id);
     event CampaignPublished(uint256 id);
 
+    constructor(
+        address _fundraiserRegistry,
+        address _funderRegistry
+    ) AccessControl(_fundraiserRegistry, _funderRegistry) {
+        serviceProvider = msg.sender;
+    }
+
     function submitCampaign(
         string memory title,
         string memory description,
         uint256 goalAmount,
         uint256 deadline,
         string memory category
-    ) public {
-        require(
-            fundraiserRegisteration.getFundraiserRegisteerationStatus(
-                msg.sender
-            ) == true,
-            "Not a registered fundraiser"
-        );
+    ) public onlyFundRaisers(msg.sender) {
         uint256 campaignId = uint256(
             keccak256(abi.encodePacked(msg.sender, block.timestamp))
         );
@@ -53,6 +54,7 @@ contract Fundraising_Campaign is AccessControl {
             false,
             block.timestamp
         );
+
         emit CampaignSubmitted(campaignId, msg.sender);
     }
 

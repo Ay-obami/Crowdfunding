@@ -13,11 +13,19 @@ contract Donation is FunderRegisteration {
         uint256 amount;
         uint256 timestamp;
     }
+
     Fundraising_Campaign public fundraising_Campaign;
     DonationDetails[] public donations;
     mapping(uint256 => uint256) public totalDonationsPerCampaign;
     mapping(address => uint256) public totalDonationsPerDonor;
     mapping(address => uint256) public CampaignBalance;
+
+    constructor(
+        address _fundraiserRegistry,
+        address _funderRegistry
+    ) FunderRegisteration(_fundraiserRegistry, _funderRegistry) {
+        serviceProvider = msg.sender;
+    }
 
     function donate(uint256 campaignId) public payable onlyFunders(msg.sender) {
         (bool isVerified, bool isPublished) = fundraising_Campaign
@@ -35,4 +43,5 @@ contract Donation is FunderRegisteration {
         totalDonationsPerDonor[msg.sender] += msg.value;
         CampaignBalance[msg.sender] += msg.value;
     }
+    // set up function to automate token details look up from chainlink
 }

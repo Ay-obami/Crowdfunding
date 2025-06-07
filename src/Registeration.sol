@@ -17,12 +17,19 @@ contract FundraiserRegisteration is AccessControl {
 
     event FundraiserRegitered(address fundraiser, string name);
 
+    constructor(
+        address _fundraiserRegistry,
+        address _funderRegistry
+    ) AccessControl(_fundraiserRegistry, _funderRegistry) {
+        serviceProvider = msg.sender;
+    }
+
     function register(
-        address Address,
         string memory name,
         string memory email,
         string memory country
     ) public {
+        address Address = msg.sender;
         require(
             fundraisersByAddress[Address].fundraiserRegistered == false,
             "Fundraiser already registered"
@@ -58,12 +65,6 @@ contract FundraiserRegisteration is AccessControl {
         );
     }
 
-    function getFundraiserRegisteerationStatus(
-        address Address
-    ) public view returns (bool) {
-        return fundraisersByAddress[Address].fundraiserRegistered;
-    }
-
     function IsRegisteredFundRaiser(
         address fundRaiser
     ) public view returns (bool) {
@@ -89,17 +90,24 @@ contract FunderRegisteration is AccessControl {
 
     event FunderRegistered(address funder, string name);
 
+    constructor(
+        address _fundraiserRegistry,
+        address _funderRegistry
+    ) AccessControl(_fundraiserRegistry, _funderRegistry) {
+        serviceProvider = msg.sender;
+    }
+
     function register(
-        address Address,
         string memory name,
         string memory email,
         string memory country
     ) public {
+        address Address = msg.sender;
         require(
-            funders[Address].funderRegistered == false,
+            funders[msg.sender].funderRegistered == false,
             "Funder already registered"
         );
-        funders[Address] = Funder(
+        funders[msg.sender] = Funder(
             Address,
             name,
             email,

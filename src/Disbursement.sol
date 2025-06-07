@@ -16,6 +16,7 @@ contract Disbursement is AccessControl {
         bool isApproved;
         bool isDisbursed;
     }
+
     mapping(uint256 => DisbursementRequest) public disbursementRequests;
     mapping(uint256 => uint256) public campaignBaalnceById;
     event DisbursementRequested(
@@ -27,6 +28,13 @@ contract Disbursement is AccessControl {
     );
     event Disbursed(uint256 requestId);
     event DisbursementApproved(uint256 requestId);
+
+    constructor(
+        address _fundraiserRegistry,
+        address _funderRegistry
+    ) AccessControl(_fundraiserRegistry, _funderRegistry) {
+        serviceProvider = msg.sender;
+    }
 
     function requestDisbursement(
         uint256 campaignId,
@@ -65,7 +73,9 @@ contract Disbursement is AccessControl {
         disbursementRequests[requestId].isVerified = true;
     }
 
-    function approveDisbursement(uint256 requestId) public onlyServiceProvider {
+    function approveDisbursement(
+        uint256 requestId
+    ) public onlyServiceProvider confirmDelay(requestId) {
         require(
             disbursementRequests[requestId].isVerified == true,
             "Not verified"
