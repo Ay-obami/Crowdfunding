@@ -64,8 +64,8 @@ contract Disbursement is AccessControl {
     }
 
     function checkTime(uint256 requestId) public view returns (bool) {
-        uint256 DISBURSEMENT_DELAY = 2 days;
+        uint256 disbursementDelay = 2 days;
 
-        return block.timestamp >= disbursementRequests[requestId].requestTime + DISBURSEMENT_DELAY;
+        return block.timestamp >= disbursementRequests[requestId].requestTime + disbursementDelay;
     }
 }

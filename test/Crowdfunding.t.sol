@@ -1,19 +1,20 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "forge-std/Test.sol";
-import {AccessControl} from "../src/Accesscontrol.sol";
-import {Disbursement} from "../src/Disbursement.sol";
+import {Test, console, Vm} from "forge-std/Test.sol";
+
+//import {AccessControl} from "../src/Accesscontrol.sol";
+//import {Disbursement} from "../src/Disbursement.sol";
 import {Fundraising_Campaign} from "../src/Fundraising_Campaign.sol";
 import {FunderRegisteration} from "../src/Registeration.sol";
 import {FundraiserRegisteration} from "../src/Registeration.sol";
-import {Donation} from "../src/Donation.sol";
+//import {Donation} from "../src/Donation.sol";
 
 contract CrowdfundingTest is Test {
     FunderRegisteration funderRegisteration;
     FundraiserRegisteration fundRaiserRegisteration;
-    Fundraising_Campaign fundraising_Campaign;
-    address Owner = address(0xBEEF);
+    Fundraising_Campaign fundraisingCampaign;
+    address owner = address(0xBEEF);
 
     event CampaignSubmitted(uint256 id, address fundraiser);
 
@@ -21,12 +22,12 @@ contract CrowdfundingTest is Test {
         funderRegisteration = new FunderRegisteration(address(fundRaiserRegisteration), address(funderRegisteration));
         fundRaiserRegisteration =
             new FundraiserRegisteration(address(fundRaiserRegisteration), address(funderRegisteration));
-        fundraising_Campaign = new Fundraising_Campaign(address(fundRaiserRegisteration), address(funderRegisteration));
+        fundraisingCampaign = new Fundraising_Campaign(address(fundRaiserRegisteration), address(funderRegisteration));
     }
 
     function testFunderRegisteration() external {
         funderRegisteration.register("John Doe", "w8M9d@example.com", "United States");
-        assertEq(funderRegisteration.IsRegisteredFunder(address(this)), true);
+        assertEq(funderRegisteration.isRegisteredFunder(address(this)), true);
     }
 
     function testgetFunderDetailsByAddress() external {
@@ -46,7 +47,7 @@ contract CrowdfundingTest is Test {
 
     function testFundraiserRegisteration() external {
         fundRaiserRegisteration.register("John Doe", "w8M9d@example.com", "United States");
-        assertEq(fundRaiserRegisteration.IsRegisteredFundRaiser(address(this)), true);
+        assertEq(fundRaiserRegisteration.isRegisteredFundRaiser(address(this)), true);
     }
 
     function testgetFundraiserDetailsByAddress() external {
@@ -59,28 +60,28 @@ contract CrowdfundingTest is Test {
     }
 
     function testSubmitCampaignAndGetCampaigndetails() external {
-        vm.startPrank(Owner);
+        vm.startPrank(owner);
 
         fundRaiserRegisteration.register("John Doe", "w8M9d@example.com", "United States");
         // vm.prank(Owner);
         vm.recordLogs();
-        fundraising_Campaign.submitCampaign(
+        fundraisingCampaign.submitCampaign(
             "Test Campaign", "This is a test campaign", 100 ether, block.timestamp + 1 weeks, "Charity"
         );
         vm.stopPrank();
-        bool isRegistered = fundRaiserRegisteration.IsRegisteredFundRaiser(Owner);
+        bool isRegistered = fundRaiserRegisteration.isRegisteredFundRaiser(owner);
         console.log("Registered?", isRegistered);
         assertTrue(isRegistered);
 
         Vm.Log[] memory logs = vm.getRecordedLogs();
         uint256 campaignId = abi.decode(logs[0].data, (uint256));
 
-        fundraising_Campaign.getCampaignDetails(campaignId);
+        fundraisingCampaign.getCampaignDetails(campaignId);
 
-        assertEq(fundraising_Campaign.getCampaignDetails(campaignId).title, "Test Campaign");
-        assertEq(fundraising_Campaign.getCampaignDetails(campaignId).description, "This is a test campaign");
-        assertEq(fundraising_Campaign.getCampaignDetails(campaignId).goalAmount, 100 ether);
-        assertEq(fundraising_Campaign.getCampaignDetails(campaignId).deadline, block.timestamp + 1 weeks);
-        assertEq(fundraising_Campaign.getCampaignDetails(campaignId).category, "Charity");
+        assertEq(fundraisingCampaign.getCampaignDetails(campaignId).title, "Test Campaign");
+        assertEq(fundraisingCampaign.getCampaignDetails(campaignId).description, "This is a test campaign");
+        assertEq(fundraisingCampaign.getCampaignDetails(campaignId).goalAmount, 100 ether);
+        assertEq(fundraisingCampaign.getCampaignDetails(campaignId).deadline, block.timestamp + 1 weeks);
+        assertEq(fundraisingCampaign.getCampaignDetails(campaignId).category, "Charity");
     }
 }

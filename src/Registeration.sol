@@ -24,29 +24,29 @@ contract FundraiserRegisteration is AccessControl {
     }
 
     function register(string memory name, string memory email, string memory country) public {
-        address Address = msg.sender;
-        require(fundraisersByAddress[Address].fundraiserRegistered == false, "Fundraiser already registered");
-        fundraisersByAddress[Address] = FundRaiser(Address, name, email, country, true, block.timestamp);
-        emit FundraiserRegitered(Address, name);
+        address user = msg.sender;
+        require(fundraisersByAddress[user].fundraiserRegistered == false, "Fundraiser already registered");
+        fundraisersByAddress[user] = FundRaiser(user, name, email, country, true, block.timestamp);
+        emit FundraiserRegitered(user, name);
     }
 
-    function getFundraiserDetailsByAddress(address Address)
+    function getFundraiserDetailsByAddress(address user)
         public
         view
         onlyServiceProvider
         returns (string memory, string memory, string memory, uint256)
     {
-        require(fundraisersByAddress[Address].fundraiserRegistered == true, "Fundraiser not registered");
+        require(fundraisersByAddress[user].fundraiserRegistered == true, "Fundraiser not registered");
         return (
-            fundraisersByAddress[Address].fundraiserName,
-            fundraisersByAddress[Address].fundraiserEmail,
-            fundraisersByAddress[Address].fundraiserCountry,
-            fundraisersByAddress[Address].registrationTime
+            fundraisersByAddress[user].fundraiserName,
+            fundraisersByAddress[user].fundraiserEmail,
+            fundraisersByAddress[user].fundraiserCountry,
+            fundraisersByAddress[user].registrationTime
         );
     }
 
-    function IsRegisteredFundRaiser(address fundRaiser) public view returns (bool) {
-        return fundraisersByAddress[fundRaiser].fundraiserRegistered;
+    function isRegisteredFundRaiser(address fundraiser) public view returns (bool) {
+        return fundraisersByAddress[fundraiser].fundraiserRegistered;
     }
 
     // function IsRegisteredFunder(address) public pure returns (bool) {
@@ -75,28 +75,28 @@ contract FunderRegisteration is AccessControl {
     }
 
     function register(string memory name, string memory email, string memory country) public {
-        address Address = msg.sender;
+        address user = msg.sender;
         require(funders[msg.sender].funderRegistered == false, "Funder already registered");
-        funders[msg.sender] = Funder(Address, name, email, country, true, block.timestamp);
-        emit FunderRegistered(Address, name);
+        funders[msg.sender] = Funder(user, name, email, country, true, block.timestamp);
+        emit FunderRegistered(user, name);
     }
 
-    function getFunderDetailsByAddress(address Address)
+    function getFunderDetailsByAddress(address user)
         public
         view
         onlyServiceProvider
         returns (string memory, string memory, string memory, uint256)
     {
-        require(funders[Address].funderRegistered == true, "Funder not registered");
+        require(funders[user].funderRegistered == true, "Funder not registered");
         return (
-            funders[Address].funderName,
-            funders[Address].funderEmail,
-            funders[Address].funderCountry,
-            funders[Address].registerationTime
+            funders[user].funderName,
+            funders[user].funderEmail,
+            funders[user].funderCountry,
+            funders[user].registerationTime
         );
     }
 
-    function IsRegisteredFunder(address funder) public view returns (bool) {
+    function isRegisteredFunder(address funder) public view returns (bool) {
         return funders[funder].funderRegistered;
     }
 

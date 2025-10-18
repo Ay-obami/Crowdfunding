@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import {Script} from "forge-std/Script.sol";
-import {AccessControl} from "../src/Accesscontrol.sol";
 import {Disbursement} from "../src/Disbursement.sol";
 import {Fundraising_Campaign} from "../src/Fundraising_Campaign.sol";
 import {FunderRegisteration} from "../src/Registeration.sol";
@@ -30,7 +29,7 @@ contract deployment is Script {
             new FundraiserRegisteration(address(fundraiserRegisteration), address(funderRegisteration));
         Disbursement disbursement = new Disbursement(address(fundraiserRegisteration), address(funderRegisteration));
 
-        Fundraising_Campaign fundraising_Campaign =
+        Fundraising_Campaign fundraisingCampaign =
             new Fundraising_Campaign(address(fundraiserRegisteration), address(funderRegisteration));
 
         Donation donation = new Donation(address(fundraiserRegisteration), address(funderRegisteration));
@@ -39,7 +38,7 @@ contract deployment is Script {
             // accessControl,
             fundraiserRegisteration,
             disbursement,
-            fundraising_Campaign,
+            fundraisingCampaign,
             funderRegisteration,
             donation
         );

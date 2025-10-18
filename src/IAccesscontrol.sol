@@ -2,11 +2,11 @@
 pragma solidity ^0.8.0;
 
 interface IFundraiserRegisterationStatus {
-    function IsRegisteredFundRaiser(address user) external view returns (bool);
+    function isRegisteredFundRaiser(address user) external view returns (bool);
 }
 
 interface IFunderRegisterationStatus {
-    function IsRegisteredFunder(address user) external view returns (bool);
+    function isRegisteredFunder(address user) external view returns (bool);
 }
 
 interface IgetFundraiserAddress {

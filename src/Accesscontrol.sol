@@ -29,12 +29,12 @@ abstract contract AccessControl {
     }
 
     modifier onlyFunders(address funder) {
-        require(funderRegisterationStatusContract.IsRegisteredFunder(funder), "Not a registered funder");
+        require(funderRegisterationStatusContract.isRegisteredFunder(funder), "Not a registered funder");
         _;
     }
 
     modifier onlyFundRaisers(address fundRaiser) {
-        require(fundraiserRegisterationStatusContract.IsRegisteredFundRaiser(fundRaiser), "Not a registered fundraiser");
+        require(fundraiserRegisterationStatusContract.isRegisteredFundRaiser(fundRaiser), "Not a registered fundraiser");
         _;
     }
 
