@@ -16,7 +16,10 @@ contract deployment is Script {
         public
         returns (
             // AccessControl,
-            FundraiserRegisteration,Disbursement,FunderRegisteration,Donation          
+            FundraiserRegisteration,
+            Disbursement,
+            FunderRegisteration,
+            Donation
         )
     {
         vm.startBroadcast();
@@ -30,14 +33,11 @@ contract deployment is Script {
 
         Donation donation = new Donation(address(fundraiserRegisteration), address(funderRegisteration));
         vm.stopBroadcast();
-        return (
-            // accessControl,
-            fundraiserRegisteration,
-            disbursement,
-            fundraisingCampaign,
-            funderRegisteration,
-            donation
-        );
+        return
+            (
+                // accessControl,
+                fundraiserRegisteration, disbursement, fundraisingCampaign, funderRegisteration, donation
+            );
     }
 
     function run()
