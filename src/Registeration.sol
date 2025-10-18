@@ -76,8 +76,8 @@ contract FunderRegisteration is AccessControl {
 
     function register(string memory name, string memory email, string memory country) public {
         address user = msg.sender;
-        require(funders[msg.sender].funderRegistered == false, "Funder already registered");
-        funders[msg.sender] = Funder(user, name, email, country, true, block.timestamp);
+        require(funders[user].funderRegistered == false, "Funder already registered");
+        funders[user] = Funder(user, name, email, country, true, block.timestamp);
         emit FunderRegistered(user, name);
     }
 
