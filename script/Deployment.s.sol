@@ -16,11 +16,7 @@ contract deployment is Script {
         public
         returns (
             // AccessControl,
-            FundraiserRegisteration,
-            Disbursement,
-            Fundraising_Campaign,
-            FunderRegisteration,
-            Donation
+            FundraiserRegisteration,Disbursement,FunderRegisteration,Donation          
         )
     {
         vm.startBroadcast();
