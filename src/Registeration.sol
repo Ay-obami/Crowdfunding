@@ -17,46 +17,26 @@ contract FundraiserRegisteration is AccessControl {
 
     event FundraiserRegitered(address fundraiser, string name);
 
-    constructor(
-        address _fundraiserRegistry,
-        address _funderRegistry
-    ) AccessControl(_fundraiserRegistry, _funderRegistry) {
+    constructor(address _fundraiserRegistry, address _funderRegistry)
+        AccessControl(_fundraiserRegistry, _funderRegistry)
+    {
         serviceProvider = msg.sender;
     }
 
-    function register(
-        string memory name,
-        string memory email,
-        string memory country
-    ) public {
+    function register(string memory name, string memory email, string memory country) public {
         address Address = msg.sender;
-        require(
-            fundraisersByAddress[Address].fundraiserRegistered == false,
-            "Fundraiser already registered"
-        );
-        fundraisersByAddress[Address] = FundRaiser(
-            Address,
-            name,
-            email,
-            country,
-            true,
-            block.timestamp
-        );
+        require(fundraisersByAddress[Address].fundraiserRegistered == false, "Fundraiser already registered");
+        fundraisersByAddress[Address] = FundRaiser(Address, name, email, country, true, block.timestamp);
         emit FundraiserRegitered(Address, name);
     }
 
-    function getFundraiserDetailsByAddress(
-        address Address
-    )
+    function getFundraiserDetailsByAddress(address Address)
         public
         view
         onlyServiceProvider
         returns (string memory, string memory, string memory, uint256)
     {
-        require(
-            fundraisersByAddress[Address].fundraiserRegistered == true,
-            "Fundraiser not registered"
-        );
+        require(fundraisersByAddress[Address].fundraiserRegistered == true, "Fundraiser not registered");
         return (
             fundraisersByAddress[Address].fundraiserName,
             fundraisersByAddress[Address].fundraiserEmail,
@@ -65,9 +45,7 @@ contract FundraiserRegisteration is AccessControl {
         );
     }
 
-    function IsRegisteredFundRaiser(
-        address fundRaiser
-    ) public view returns (bool) {
+    function IsRegisteredFundRaiser(address fundRaiser) public view returns (bool) {
         return fundraisersByAddress[fundRaiser].fundraiserRegistered;
     }
 
@@ -90,46 +68,26 @@ contract FunderRegisteration is AccessControl {
 
     event FunderRegistered(address funder, string name);
 
-    constructor(
-        address _fundraiserRegistry,
-        address _funderRegistry
-    ) AccessControl(_fundraiserRegistry, _funderRegistry) {
+    constructor(address _fundraiserRegistry, address _funderRegistry)
+        AccessControl(_fundraiserRegistry, _funderRegistry)
+    {
         serviceProvider = msg.sender;
     }
 
-    function register(
-        string memory name,
-        string memory email,
-        string memory country
-    ) public {
+    function register(string memory name, string memory email, string memory country) public {
         address Address = msg.sender;
-        require(
-            funders[msg.sender].funderRegistered == false,
-            "Funder already registered"
-        );
-        funders[msg.sender] = Funder(
-            Address,
-            name,
-            email,
-            country,
-            true,
-            block.timestamp
-        );
+        require(funders[msg.sender].funderRegistered == false, "Funder already registered");
+        funders[msg.sender] = Funder(Address, name, email, country, true, block.timestamp);
         emit FunderRegistered(Address, name);
     }
 
-    function getFunderDetailsByAddress(
-        address Address
-    )
+    function getFunderDetailsByAddress(address Address)
         public
         view
         onlyServiceProvider
         returns (string memory, string memory, string memory, uint256)
     {
-        require(
-            funders[Address].funderRegistered == true,
-            "Funder not registered"
-        );
+        require(funders[Address].funderRegistered == true, "Funder not registered");
         return (
             funders[Address].funderName,
             funders[Address].funderEmail,

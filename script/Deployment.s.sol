@@ -25,28 +25,15 @@ contract deployment is Script {
         )
     {
         vm.startBroadcast();
-        funderRegisteration = new FunderRegisteration(
-            address(fundraiserRegisteration),
-            address(funderRegisteration)
-        );
-        fundraiserRegisteration = new FundraiserRegisteration(
-            address(fundraiserRegisteration),
-            address(funderRegisteration)
-        );
-        Disbursement disbursement = new Disbursement(
-            address(fundraiserRegisteration),
-            address(funderRegisteration)
-        );
+        funderRegisteration = new FunderRegisteration(address(fundraiserRegisteration), address(funderRegisteration));
+        fundraiserRegisteration =
+            new FundraiserRegisteration(address(fundraiserRegisteration), address(funderRegisteration));
+        Disbursement disbursement = new Disbursement(address(fundraiserRegisteration), address(funderRegisteration));
 
-        Fundraising_Campaign fundraising_Campaign = new Fundraising_Campaign(
-            address(fundraiserRegisteration),
-            address(funderRegisteration)
-        );
+        Fundraising_Campaign fundraising_Campaign =
+            new Fundraising_Campaign(address(fundraiserRegisteration), address(funderRegisteration));
 
-        Donation donation = new Donation(
-            address(fundraiserRegisteration),
-            address(funderRegisteration)
-        );
+        Donation donation = new Donation(address(fundraiserRegisteration), address(funderRegisteration));
         vm.stopBroadcast();
         return (
             // accessControl,

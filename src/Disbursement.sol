@@ -19,96 +19,53 @@ contract Disbursement is AccessControl {
 
     mapping(uint256 => DisbursementRequest) public disbursementRequests;
     mapping(uint256 => uint256) public campaignBaalnceById;
+
     event DisbursementRequested(
-        uint256 requestId,
-        address fundraiser,
-        uint256 campaignId,
-        uint256 amount,
-        string purpose
+        uint256 requestId, address fundraiser, uint256 campaignId, uint256 amount, string purpose
     );
     event Disbursed(uint256 requestId);
     event DisbursementApproved(uint256 requestId);
 
-    constructor(
-        address _fundraiserRegistry,
-        address _funderRegistry
-    ) AccessControl(_fundraiserRegistry, _funderRegistry) {
+    constructor(address _fundraiserRegistry, address _funderRegistry)
+        AccessControl(_fundraiserRegistry, _funderRegistry)
+    {
         serviceProvider = msg.sender;
     }
 
-    function requestDisbursement(
-        uint256 campaignId,
-        uint256 amount,
-        string memory purpose
-    ) public onlyFundraiser(msg.sender) {
-        uint256 requestId = uint256(
-            keccak256(abi.encodePacked(msg.sender, block.timestamp))
-        );
+    function requestDisbursement(uint256 campaignId, uint256 amount, string memory purpose)
+        public
+        onlyFundraiser(msg.sender)
+    {
+        uint256 requestId = uint256(keccak256(abi.encodePacked(msg.sender, block.timestamp)));
         disbursementRequests[requestId] = DisbursementRequest(
-            requestId,
-            msg.sender,
-            campaignId,
-            amount,
-            purpose,
-            block.timestamp,
-            0,
-            false,
-            false,
-            false
+            requestId, msg.sender, campaignId, amount, purpose, block.timestamp, 0, false, false, false
         );
-        emit DisbursementRequested(
-            requestId,
-            msg.sender,
-            campaignId,
-            amount,
-            purpose
-        );
+        emit DisbursementRequested(requestId, msg.sender, campaignId, amount, purpose);
     }
 
     function verifyDisbursement(uint256 requestId) public onlyServiceProvider {
-        require(
-            disbursementRequests[requestId].isVerified == false,
-            "Already verified"
-        );
+        require(disbursementRequests[requestId].isVerified == false, "Already verified");
         disbursementRequests[requestId].isVerified = true;
     }
 
-    function approveDisbursement(
-        uint256 requestId
-    ) public onlyServiceProvider confirmDelay(requestId) {
-        require(
-            disbursementRequests[requestId].isVerified == true,
-            "Not verified"
-        );
-        require(
-            disbursementRequests[requestId].isApproved == false,
-            "Already approved"
-        );
+    function approveDisbursement(uint256 requestId) public onlyServiceProvider confirmDelay(requestId) {
+        require(disbursementRequests[requestId].isVerified == true, "Not verified");
+        require(disbursementRequests[requestId].isApproved == false, "Already approved");
         disbursementRequests[requestId].isApproved = true;
         emit DisbursementApproved(requestId);
     }
 
     function disburseFunds(uint256 requestId) public onlyServiceProvider {
-        require(
-            disbursementRequests[requestId].isApproved == true,
-            "Not approved"
-        );
-        require(
-            disbursementRequests[requestId].isDisbursed == false,
-            "Already disbursed"
-        );
+        require(disbursementRequests[requestId].isApproved == true, "Not approved");
+        require(disbursementRequests[requestId].isDisbursed == false, "Already disbursed");
         disbursementRequests[requestId].isDisbursed = true;
-        campaignBaalnceById[
-            disbursementRequests[requestId].campaignId
-        ] -= disbursementRequests[requestId].amount;
+        campaignBaalnceById[disbursementRequests[requestId].campaignId] -= disbursementRequests[requestId].amount;
         emit Disbursed(requestId);
     }
 
     function checkTime(uint256 requestId) public view returns (bool) {
         uint256 DISBURSEMENT_DELAY = 2 days;
 
-        return
-            block.timestamp >=
-            disbursementRequests[requestId].requestTime + DISBURSEMENT_DELAY;
+        return block.timestamp >= disbursementRequests[requestId].requestTime + DISBURSEMENT_DELAY;
     }
 }

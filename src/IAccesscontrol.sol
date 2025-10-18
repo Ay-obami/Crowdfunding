@@ -10,9 +10,7 @@ interface IFunderRegisterationStatus {
 }
 
 interface IgetFundraiserAddress {
-    function getFundraiserAddress(
-        address fundraiser
-    ) external view returns (address);
+    function getFundraiserAddress(address fundraiser) external view returns (address);
 }
 
 interface IcheckTime {

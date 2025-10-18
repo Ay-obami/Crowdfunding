@@ -20,25 +20,21 @@ contract Donation is FunderRegisteration {
     mapping(address => uint256) public totalDonationsPerDonor;
     mapping(address => uint256) public CampaignBalance;
 
-    constructor(
-        address _fundraiserRegistry,
-        address _funderRegistry
-    ) FunderRegisteration(_fundraiserRegistry, _funderRegistry) {
+    constructor(address _fundraiserRegistry, address _funderRegistry)
+        FunderRegisteration(_fundraiserRegistry, _funderRegistry)
+    {
         serviceProvider = msg.sender;
     }
 
     function donate(uint256 campaignId) public payable onlyFunders(msg.sender) {
-        (bool isVerified, bool isPublished) = fundraising_Campaign
-            .getCampaignStatus(campaignId);
+        (bool isVerified, bool isPublished) = fundraising_Campaign.getCampaignStatus(campaignId);
 
         require(
             isVerified && isPublished && msg.value > 0,
             "Campaign must be verified and published and donation must be greater than 0"
         );
 
-        donations.push(
-            DonationDetails(msg.sender, campaignId, msg.value, block.timestamp)
-        );
+        donations.push(DonationDetails(msg.sender, campaignId, msg.value, block.timestamp));
         totalDonationsPerCampaign[campaignId] += msg.value;
         totalDonationsPerDonor[msg.sender] += msg.value;
         CampaignBalance[msg.sender] += msg.value;
