@@ -10,7 +10,7 @@ contract FundraiserRegisteration is AccessControl {
         string fundraiserEmail;
         string fundraiserCountry;
         bool fundraiserRegistered;
-        uint256 registrationTime;
+        uint256 registerationTime;
     }
 
     mapping(address => FundRaiser) public fundraisersByAddress;
@@ -26,7 +26,14 @@ contract FundraiserRegisteration is AccessControl {
     function register(string memory name, string memory email, string memory country) public {
         address user = msg.sender;
         require(fundraisersByAddress[user].fundraiserRegistered == false, "Fundraiser already registered");
-        fundraisersByAddress[user] = FundRaiser(user, name, email, country, true, block.timestamp);
+        fundraisersByAddress[user] = FundRaiser({
+            fundraiserAddress: user,
+            fundraiserName: name,
+            fundraiserEmail: email,
+            fundraiserCountry: country,
+            fundraiserRegistered: true,
+            registerationTime: block.timestamp
+        });
         emit FundraiserRegitered(user, name);
     }
 
@@ -41,7 +48,7 @@ contract FundraiserRegisteration is AccessControl {
             fundraisersByAddress[user].fundraiserName,
             fundraisersByAddress[user].fundraiserEmail,
             fundraisersByAddress[user].fundraiserCountry,
-            fundraisersByAddress[user].registrationTime
+            fundraisersByAddress[user].registerationTime
         );
     }
 
@@ -77,7 +84,14 @@ contract FunderRegisteration is AccessControl {
     function register(string memory name, string memory email, string memory country) public {
         address user = msg.sender;
         require(funders[user].funderRegistered == false, "Funder already registered");
-        funders[user] = Funder(user, name, email, country, true, block.timestamp);
+        funders[user] = Funder({
+            funderAddress: user,
+            funderName: name,
+            funderEmail: email,
+            funderCountry: country,
+            funderRegistered: true,
+            registerationTime: block.timestamp
+        });
         emit FunderRegistered(user, name);
     }
 

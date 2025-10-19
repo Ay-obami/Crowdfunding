@@ -24,31 +24,51 @@ abstract contract AccessControl {
     }
 
     modifier onlyServiceProvider() {
-        require(msg.sender == serviceProvider, "Not Authorised");
+        _onlyServiceProvider();
         _;
+    }
+
+    function _onlyServiceProvider() internal view {
+        require(msg.sender == serviceProvider, "Not Authorised");
     }
 
     modifier onlyFunders(address funder) {
-        require(funderRegisterationStatusContract.isRegisteredFunder(funder), "Not a registered funder");
+        _onlyFunders(funder);
         _;
+    }
+
+    function _onlyFunders(address funder) internal view {
+        require(funderRegisterationStatusContract.isRegisteredFunder(funder), "Not a registered funder");
     }
 
     modifier onlyFundRaisers(address fundRaiser) {
-        require(fundraiserRegisterationStatusContract.isRegisteredFundRaiser(fundRaiser), "Not a registered fundraiser");
+        _onlyFundRaisers(fundRaiser);
         _;
     }
 
+    function _onlyFundRaisers(address fundraiser) internal view {
+        require(fundraiserRegisterationStatusContract.isRegisteredFundRaiser(fundraiser), "Not a registered fundraiser");
+    }
+
     modifier onlyFundraiser(address fundraiser) {
+        _onlyFundraiser(fundraiser);
+        _;
+    }
+
+    function _onlyFundraiser(address fundraiser) internal view {
         require(
             fundraiser == IgetFundraiserAddress(fundraiserRegistry).getFundraiserAddress(msg.sender),
             "Not your proposal"
         );
-        _;
     }
 
     modifier confirmDelay(uint256 requestId) {
-        require(IcheckTime(checktimeRegistry).checkTime(), "Delay not over");
+        _confirmDelay(requestId);
         _;
+    }
+
+    function _confirmDelay(uint256 requestId) internal view {
+        require(IcheckTime(checktimeRegistry).checkTime(requestId), "Delay not over");
     }
 
     function setServiceProvider(address _serviceProvider) public onlyServiceProvider {

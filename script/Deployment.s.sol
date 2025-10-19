@@ -18,6 +18,7 @@ contract deployment is Script {
             // AccessControl,
             FundraiserRegisteration,
             Disbursement,
+            Fundraising_Campaign,
             FunderRegisteration,
             Donation
         )

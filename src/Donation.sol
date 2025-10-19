@@ -34,7 +34,9 @@ contract Donation is FunderRegisteration {
             "Campaign must be verified and published and donation must be greater than 0"
         );
 
-        donations.push(DonationDetails(msg.sender, campaignId, msg.value, block.timestamp));
+        donations.push(
+            DonationDetails({donor: msg.sender, campaignId: campaignId, amount: msg.value, timestamp: block.timestamp})
+        );
         totalDonationsPerCampaign[campaignId] += msg.value;
         totalDonationsPerDonor[msg.sender] += msg.value;
         campaignBalance[msg.sender] += msg.value;

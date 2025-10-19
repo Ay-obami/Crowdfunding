@@ -41,9 +41,18 @@ contract Fundraising_Campaign is AccessControl {
         string memory category
     ) public onlyFundRaisers(msg.sender) {
         uint256 campaignId = uint256(keccak256(abi.encodePacked(msg.sender, block.timestamp)));
-        campaignProposalById[campaignId] = CampaignProposal(
-            campaignId, msg.sender, title, description, goalAmount, deadline, category, false, false, block.timestamp
-        );
+        campaignProposalById[campaignId] = CampaignProposal({
+            id: campaignId,
+            fundraiser: msg.sender,
+            title: title,
+            description: description,
+            goalAmount: goalAmount,
+            deadline: deadline,
+            category: category,
+            isVerified: false,
+            isPublished: false,
+            submissionTime: block.timestamp
+        });
 
         emit CampaignSubmitted(campaignId, msg.sender);
     }
@@ -62,18 +71,18 @@ contract Fundraising_Campaign is AccessControl {
     }
 
     function getCampaignDetails(uint256 campaignId) public view returns (CampaignProposal memory) {
-        return CampaignProposal(
-            campaignProposalById[campaignId].id,
-            campaignProposalById[campaignId].fundraiser,
-            campaignProposalById[campaignId].title,
-            campaignProposalById[campaignId].description,
-            campaignProposalById[campaignId].goalAmount,
-            campaignProposalById[campaignId].deadline,
-            campaignProposalById[campaignId].category,
-            campaignProposalById[campaignId].isVerified,
-            campaignProposalById[campaignId].isPublished,
-            campaignProposalById[campaignId].submissionTime
-        );
+        return CampaignProposal({
+            id: campaignProposalById[campaignId].id,
+            fundraiser: campaignProposalById[campaignId].fundraiser,
+            title: campaignProposalById[campaignId].title,
+            description: campaignProposalById[campaignId].description,
+            goalAmount: campaignProposalById[campaignId].goalAmount,
+            deadline: campaignProposalById[campaignId].deadline,
+            category: campaignProposalById[campaignId].category,
+            isVerified: campaignProposalById[campaignId].isVerified,
+            isPublished: campaignProposalById[campaignId].isPublished,
+            submissionTime: campaignProposalById[campaignId].submissionTime
+        });
     }
 
     function getCampaignStatus(uint256 campaignId) public view returns (bool, bool) {

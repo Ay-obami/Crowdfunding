@@ -34,12 +34,21 @@ contract Disbursement is AccessControl {
 
     function requestDisbursement(uint256 campaignId, uint256 amount, string memory purpose)
         public
-        onlyFundraiser(msg.sender)
+        onlyFundRaisers(msg.sender)
     {
         uint256 requestId = uint256(keccak256(abi.encodePacked(msg.sender, block.timestamp)));
-        disbursementRequests[requestId] = DisbursementRequest(
-            requestId, msg.sender, campaignId, amount, purpose, block.timestamp, 0, false, false, false
-        );
+        disbursementRequests[requestId] = DisbursementRequest({
+            requestId: requestId,
+            fundraiser: msg.sender,
+            campaignId: campaignId,
+            amount: amount,
+            purpose: purpose,
+            requestTime: block.timestamp,
+            approvalTime: 0,
+            isVerified: false,
+            isApproved: false,
+            isDisbursed: false
+        });
         emit DisbursementRequested(requestId, msg.sender, campaignId, amount, purpose);
     }
 

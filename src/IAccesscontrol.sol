@@ -14,5 +14,5 @@ interface IgetFundraiserAddress {
 }
 
 interface IcheckTime {
-    function checkTime() external view returns (bool);
+    function checkTime(uint256 requestId) external view returns (bool);
 }
